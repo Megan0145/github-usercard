@@ -5,7 +5,7 @@
 
 axios.get('http://api.github.com/users/Megan0145')
   .then(response => {
-    // debugger
+    debugger
     cardsDiv.appendChild(cardCreator(response.data));
     getFollowersData(response.data.followers_url);
   })
@@ -106,7 +106,11 @@ function cardCreator(cardData) {
     html_url,
     followers,
     following,
-    bio
+    bio,
+    email,
+    hireable,
+    public_gists,
+    public_repos
   } = cardData;
 
   const card = document.createElement('div');
@@ -145,15 +149,50 @@ function cardCreator(cardData) {
 
   const userBio = document.createElement('p');
   userBio.textContent = `Bio: ${bio}`;
-  cardInfo.append(userFullName, userLoginName, userLocation, userProfile, userFollowers, userFollowing, userBio);
 
+  const userEmail = document.createElement('p');
+  userEmail.textContent = `Email: ${email}`;
+  userEmail.classList.add('hidden');
+
+  const userPubGists = document.createElement('p');
+  userPubGists.textContent = `Public Gists: ${public_gists}`;
+  userPubGists.classList.add('hidden');
+
+  const userPubRepos = document.createElement('p');
+  userPubRepos.textContent = `Public Repos: ${public_repos}`;
+  userPubRepos.classList.add('hidden');
+  
+  const expandUser = document.createElement('button');
+  expandUser.textContent = 'See More';
+  expandUser.addEventListener('click', () => {
+    card.classList.toggle('expand');
+    userEmail.classList.toggle('hidden');
+    userPubGists.classList.toggle('hidden');
+    userPubRepos.classList.toggle('hidden');
+  });
+  
+  cardInfo.append(userFullName, userLoginName, userLocation, userProfile, userFollowers, userFollowing, userBio, userEmail, userPubGists, userPubRepos, expandUser);
   card.append(img, cardInfo);
 
 
   return card;
 }
 
+const myProfile = {
+  'avatar_url': 'https://avatars3.githubusercontent.com/u/20298565?s=460&v=4',
+  'name': 'Megan Ennis',
+  'login' : 'megan0145',
+  'location': 'Dublin',
+  'html_url': 'github.com/users/Megan0145',
+  'followers': 4,
+  'following': 4,
+  'bio': 'Bla bla blaaaaaaaa',
+  'email': 'mennis0145@gmail.com',
+  'public_gists': 0,
+  'public_repos': 30,
+};
 
+cardsDiv.appendChild(cardCreator(myProfile));
 /* List of LS Instructors Github username's: 
   tetondan
   dustinmyers
