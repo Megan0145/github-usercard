@@ -4,12 +4,15 @@
 */
 
 axios.get('http://api.github.com/users/Megan0145')
-.then( response => { debugger
-  cardsDiv.appendChild(cardCreator(response.data));
-})
-.catch( error => {
-debugger
-});
+  .then(response => {
+    // debugger
+    cardsDiv.appendChild(cardCreator(response.data));
+    getFollowersData(response.data.followers_url);
+  })
+  .catch(error => {
+    // debugger
+  });
+
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -32,25 +35,44 @@ debugger
           user, and adding that card to the DOM.
 */
 
-const followersArray = [  'tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
+const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
 
 followersArray.forEach(follower => {
   axios.get(`http://api.github.com/users/${follower}`)
-  .then( response => { 
-    debugger
+    .then(response => {
+      // debugger
       cardsDiv.appendChild(cardCreator(response.data));
     })
-    .catch( error => {
-    debugger
+    .catch(error => {
+      // debugger
     });
 });
-// axios.get('http://api.github.com/users/Megan0145')
-// .then( response => { debugger
-//   cardsDiv.appendChild(cardCreator(response.data));
-// })
-// .catch( error => {
-// debugger
-// });
+
+function getFollowersData(followersUrl) {
+  axios.get(followersUrl)
+  .then(response => {
+    // debugger
+    response.data.forEach(follower => {
+     axios.get(`http://api.github.com/users/${follower.login}`)
+     .then(response => {
+       debugger
+       cardsDiv.appendChild(cardCreator(response.data));
+     })
+     .catch( error => {
+  
+     });
+    });
+  })
+  .catch(error => {
+    debugger
+  });
+
+}
+
+
+
+
+
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -76,7 +98,16 @@ const cardsDiv = document.querySelector('.cards');
 
 function cardCreator(cardData) {
 
-  const {avatar_url, name, login, location, html_url, followers, following, bio} = cardData;
+  const {
+    avatar_url,
+    name,
+    login,
+    location,
+    html_url,
+    followers,
+    following,
+    bio
+  } = cardData;
 
   const card = document.createElement('div');
   card.classList.add('card');
@@ -102,7 +133,7 @@ function cardCreator(cardData) {
   userProfile.textContent = 'Profile: ';
 
   const userProfileLink = document.createElement('a');
-  userProfileLink.setAttribute('href', html_url); 
+  userProfileLink.setAttribute('href', html_url);
   userProfileLink.textContent = html_url;
   userProfile.appendChild(userProfileLink);
 
@@ -130,5 +161,3 @@ function cardCreator(cardData) {
   luishrd
   bigknell
 */
-
-
