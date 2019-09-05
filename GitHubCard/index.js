@@ -14,6 +14,28 @@ axios.get('http://api.github.com/users/Megan0145')
   });
 
 
+// axios.get('http://api.github.com/users/Ziggyss')
+//      .then(response => {
+//          axios.get(response.data.followers_url)
+//              .then(response => {
+//                //if response is succesful, returns array of objects, each object being a follower of yoours
+//                //looks like [ {follower 1}, {follower 2}, {follower 3} .....]
+//                //you can use forEach to iterate over the array of objects
+//                // for every object (follower) in the array, return it, pass it into your cardMaker function and append to DOM :D
+//                response.data.forEach(follower => {
+//                   cardsDiv.appendChild(cardCreator(follower));
+//                });
+//              })
+//              .catch(error => {
+//                 document.body.innerText = error.message;
+//              }); 
+//      })
+//      .catch(error => {
+//       document.body.innerText = error.message;
+//      });
+
+
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
