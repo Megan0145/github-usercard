@@ -32,8 +32,25 @@ debugger
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [  'tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
 
+followersArray.forEach(follower => {
+  axios.get(`http://api.github.com/users/${follower}`)
+  .then( response => { 
+    debugger
+      cardsDiv.appendChild(cardCreator(response.data));
+    })
+    .catch( error => {
+    debugger
+    });
+});
+// axios.get('http://api.github.com/users/Megan0145')
+// .then( response => { debugger
+//   cardsDiv.appendChild(cardCreator(response.data));
+// })
+// .catch( error => {
+// debugger
+// });
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
