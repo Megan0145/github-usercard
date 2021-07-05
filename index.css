@@ -123,5 +123,14 @@ body {
   margin: 3px 0 10px;
 }
 
+.card .expand {
+  height: 280px;
+}
+button {
+  margin-top: 1rem;
+}
+.hidden {
+  display: none;
+}
 
 

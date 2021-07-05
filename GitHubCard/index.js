@@ -3,6 +3,39 @@
            https://api.github.com/users/<your name>
 */
 
+axios.get('http://api.github.com/users/Megan0145')
+  .then(response => {
+    debugger
+    cardsDiv.appendChild(cardCreator(response.data));
+    getFollowersData(response.data.followers_url);
+  })
+  .catch(error => {
+    // debugger
+  });
+
+
+// axios.get('http://api.github.com/users/Ziggyss')
+//      .then(response => {
+//          axios.get(response.data.followers_url)
+//              .then(response => {
+//                //if response is succesful, returns array of objects, each object being a follower of yoours
+//                //looks like [ {follower 1}, {follower 2}, {follower 3} .....]
+//                //you can use forEach to iterate over the array of objects
+//                // for every object (follower) in the array, return it, pass it into your cardMaker function and append to DOM :D
+//                response.data.forEach(follower => {
+//                   cardsDiv.appendChild(cardCreator(follower));
+//                });
+//              })
+//              .catch(error => {
+//                 document.body.innerText = error.message;
+//              }); 
+//      })
+//      .catch(error => {
+//       document.body.innerText = error.message;
+//      });
+
+
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -24,28 +57,164 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
+
+followersArray.forEach(follower => {
+  axios.get(`http://api.github.com/users/${follower}`)
+    .then(response => {
+      // debugger
+      cardsDiv.appendChild(cardCreator(response.data));
+    })
+    .catch(error => {
+      // debugger
+    });
+});
+
+function getFollowersData(followersUrl) {
+  axios.get(followersUrl)
+  .then(response => {
+    // debugger
+    response.data.forEach(follower => {
+     axios.get(`http://api.github.com/users/${follower.login}`)
+     .then(response => {
+       debugger
+       cardsDiv.appendChild(cardCreator(response.data));
+     })
+     .catch( error => {
+  
+     });
+    });
+  })
+  .catch(error => {
+    debugger
+  });
+
+}
+
+
+
+
+
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
 <div class="card">
-  <img src={image url of user} />
+  <img src={image url of user} /> //avatar url
   <div class="card-info">
-    <h3 class="name">{users name}</h3>
-    <p class="username">{users user name}</p>
-    <p>Location: {users location}</p>
+    <h3 class="name">{users name}</h3> //name
+    <p class="username">{users user name}</p> //login
+    <p>Location: {users location}</p> //location
     <p>Profile:  
-      <a href={address to users github page}>{address to users github page}</a>
+      <a href={address to users github page}>{address to users github page}</a> url
     </p>
-    <p>Followers: {users followers count}</p>
-    <p>Following: {users following count}</p>
-    <p>Bio: {users bio}</p>
+    <p>Followers: {users followers count}</p> //followers
+    <p>Following: {users following count}</p> //following
+    <p>Bio: {users bio}</p> //bio
   </div>
 </div>
 
 */
 
+const cardsDiv = document.querySelector('.cards');
+
+function cardCreator(cardData) {
+
+  const {
+    avatar_url,
+    name,
+    login,
+    location,
+    html_url,
+    followers,
+    following,
+    bio,
+    email,
+    hireable,
+    public_gists,
+    public_repos
+  } = cardData;
+
+  const card = document.createElement('div');
+  card.classList.add('card');
+
+  const img = document.createElement('img');
+  img.setAttribute('src', avatar_url);
+
+  const cardInfo = document.createElement('div');
+  cardInfo.classList.add('card-info');
+
+  const userFullName = document.createElement('h3');
+  userFullName.classList.add('name');
+  userFullName.textContent = name;
+
+  const userLoginName = document.createElement('p');
+  userLoginName.classList.add('username');
+  userLoginName.textContent = login;
+
+  const userLocation = document.createElement('p');
+  userLocation.textContent = `Location: ${location}`;
+
+  const userProfile = document.createElement('p');
+  userProfile.textContent = 'Profile: ';
+
+  const userProfileLink = document.createElement('a');
+  userProfileLink.setAttribute('href', html_url);
+  userProfileLink.textContent = html_url;
+  userProfile.appendChild(userProfileLink);
+
+  const userFollowers = document.createElement('p');
+  userFollowers.textContent = `Followers: ${followers}`;
+
+  const userFollowing = document.createElement('p');
+  userFollowing.textContent = `Following: ${following}`;
+
+  const userBio = document.createElement('p');
+  userBio.textContent = `Bio: ${bio}`;
+
+  const userEmail = document.createElement('p');
+  userEmail.textContent = `Email: ${email}`;
+  userEmail.classList.add('hidden');
+
+  const userPubGists = document.createElement('p');
+  userPubGists.textContent = `Public Gists: ${public_gists}`;
+  userPubGists.classList.add('hidden');
+
+  const userPubRepos = document.createElement('p');
+  userPubRepos.textContent = `Public Repos: ${public_repos}`;
+  userPubRepos.classList.add('hidden');
+  
+  const expandUser = document.createElement('button');
+  expandUser.textContent = 'See More';
+  expandUser.addEventListener('click', () => {
+    card.classList.toggle('expand');
+    userEmail.classList.toggle('hidden');
+    userPubGists.classList.toggle('hidden');
+    userPubRepos.classList.toggle('hidden');
+  });
+  
+  cardInfo.append(userFullName, userLoginName, userLocation, userProfile, userFollowers, userFollowing, userBio, userEmail, userPubGists, userPubRepos, expandUser);
+  card.append(img, cardInfo);
+
+
+  return card;
+}
+
+const myProfile = {
+  'avatar_url': 'https://avatars3.githubusercontent.com/u/20298565?s=460&v=4',
+  'name': 'Megan Ennis',
+  'login' : 'megan0145',
+  'location': 'Dublin',
+  'html_url': 'github.com/users/Megan0145',
+  'followers': 4,
+  'following': 4,
+  'bio': 'Bla bla blaaaaaaaa',
+  'email': 'mennis0145@gmail.com',
+  'public_gists': 0,
+  'public_repos': 30,
+};
+
+cardsDiv.appendChild(cardCreator(myProfile));
 /* List of LS Instructors Github username's: 
   tetondan
   dustinmyers
